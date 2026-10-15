@@ -510,14 +510,6 @@
     <div id="sliders-body"></div>
   </div>
 
-  <!-- RESUMEN GRÁFICO -->
-  <div class="card">
-    <div class="card-header">📊 Resumen acumulado del día</div>
-    <div class="resumen-body" id="resumen-body">
-      <p style="color:var(--dim);font-size:.85rem;text-align:center;padding:8px 0">Sin datos aún</p>
-    </div>
-  </div>
-
   <!-- ÍCONOS SERVICIOS -->
   <div class="card">
     <div class="iconos-grid" id="iconos-grid">
@@ -777,20 +769,20 @@ function buildSliders(){
     fila.className='slider-fila';
     fila.innerHTML=`
       <div class="sl-wrap izq">
-        <div class="sl-val" id="vf${i}">0</div>
+        <div class="sl-val" id="vf${i}"></div>
         <input type="range" class="izq" id="slf${i}" min="0" max="${MAX}" value="0" step="1"
           oninput="moverSlider('f',${i},this.value)">
       </div>
       <div class="sl-centro">
         <span class="sl-srv-name">${srv}</span>
         <div class="sl-fmval">
-          <span class="f" id="cf${i}">0</span>
+          <span class="f" id="cf${i}"></span>
           <span class="sep">|</span>
-          <span class="m" id="cm${i}">0</span>
+          <span class="m" id="cm${i}"></span>
         </div>
       </div>
       <div class="sl-wrap der">
-        <div class="sl-val" id="vm${i}">0</div>
+        <div class="sl-val" id="vm${i}"></div>
         <input type="range" class="der" id="slm${i}" min="0" max="${MAX}" value="0" step="1"
           oninput="moverSlider('m',${i},this.value)">
       </div>
@@ -996,10 +988,13 @@ function renderIconos(){
 
   grid.innerHTML = items.map(it=>{
     const tot = it.f + it.m;
+    const fStr = it.f > 0 ? `<span style="color:var(--rojo)">${it.f}</span>` : `<span style="color:#ccc">0</span>`;
+    const mStr = it.m > 0 ? `<span style="color:var(--azul)">${it.m}</span>` : `<span style="color:#ccc">0</span>`;
     return `<div class="icono-card">
       ${it.svg}
       <div class="icono-total ${it.cls}">${tot}</div>
       <div class="icono-label">${it.label}</div>
+      <div style="font-size:.82rem;font-weight:700;margin-top:2px">${fStr}<span style="color:#bbb"> | </span>${mStr}</div>
     </div>`;
   }).join('');
 }
