@@ -171,6 +171,12 @@
     width:100%; height:36px; background:transparent;
     outline:none; cursor:pointer; margin:0; padding:0;
   }
+  .sl-input-bi {
+    transition: none;
+  }
+  .sl-input-bi.volviendo {
+    transition: all 0.4s cubic-bezier(.22,.68,0,1.3);
+  }
   .sl-input-bi::-webkit-slider-thumb {
     -webkit-appearance:none;
     width:28px; height:28px; border-radius:50%;
@@ -797,8 +803,21 @@ function moverBi(i,val){
 
 function resetBi(i){
   const el=document.getElementById('sl'+i);
-  el.value=MID;
-  document.getElementById('fill'+i).style.cssText='width:0';
+  const fill=document.getElementById('fill'+i);
+  el.classList.add('volviendo');
+  // Animar el fill a 0 también
+  fill.style.transition='all 0.4s cubic-bezier(.22,.68,0,1.3)';
+  fill.style.width='0';
+  fill.style.left='50%';
+  // Forzar reflow para que el browser aplique la transición
+  requestAnimationFrame(()=>{
+    el.value=MID;
+    setTimeout(()=>{
+      el.classList.remove('volviendo');
+      fill.style.transition='';
+      fill.style.cssText='width:0';
+    },420);
+  });
 }
 
 function dispararBi(i,val){
@@ -817,7 +836,7 @@ let _modalIdx = null;
 function guardarSlider(gen,i,val){
   val=parseInt(val);
   // Solo registrar si superó el umbral
-  if(val < UMBRAL) return;
+  if(val < 100) return;
 
   const srv = SERVICIOS[i];
 
@@ -892,35 +911,8 @@ function actualizarTotales(){
 
 /* ─── RESUMEN ────────────────────────────────────────── */
 function renderResumen(){
-  const body=document.getElementById('resumen-body');
-  // Combinar sliders actuales + acumulado del día
-  const datos = SERVICIOS.map((srv,i)=>({
-    srv,
-    f: acumF[srv]||0,
-    m: acumM[srv]||0
-  }));
-  const maxVal = Math.max(...datos.map(d=>Math.max(d.f,d.m)),1);
-  const hayDatos = datos.some(d=>d.f>0||d.m>0);
-  if(!hayDatos){
-    body.innerHTML='<p style="color:var(--dim);font-size:.85rem;text-align:center;padding:8px 0">Sin datos aún</p>';
-    return;
-  }
-  body.innerHTML = datos.map(d=>{
-    if(d.f===0&&d.m===0) return '';
-    const pctF=Math.round(d.f/maxVal*100);
-    const pctM=Math.round(d.m/maxVal*100);
-    return `<div class="res-fila">
-      <span class="res-srv">${d.srv}</span>
-      <div class="res-tracks">
-        <div class="res-track"><div class="res-fill f" style="width:${pctF}%"></div></div>
-        <div class="res-track"><div class="res-fill m" style="width:${pctM}%"></div></div>
-      </div>
-      <div class="res-tots">
-        <span class="rf">${d.f}</span>
-        <span class="rm">${d.m}</span>
-      </div>
-    </div>`;
-  }).join('');
+  // Actualiza los contadores F/M sobre cada fila de slider
+  SERVICIOS.forEach((srv,i)=>actualizarDisplaySlider(i));
 }
 
 /* ─── ÍCONOS TOTALES ─────────────────────────────────── */
