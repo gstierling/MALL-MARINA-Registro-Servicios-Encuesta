@@ -129,83 +129,68 @@
 
   /* ── SLIDERS ── */
   .sliders-header {
-    display:grid;
-    grid-template-columns:1fr 70px 1fr;
-    align-items:center;
-    padding:12px 14px 8px;
-    gap:6px;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 20px 8px;
   }
-  .sh-lado {
-    display:flex; flex-direction:column;
-    align-items:center; gap:4px;
-  }
-  .sh-lado svg { width:38px; height:38px; }
+  .sh-lado { display:flex; align-items:center; gap:6px; }
+  .sh-lado svg { width:32px; height:32px; }
   .sh-lado.izq .sh-nombre { color:var(--rojo); }
   .sh-lado.der .sh-nombre { color:var(--azul); }
-  .sh-nombre { font-size:.85rem; font-weight:800; text-transform:uppercase; letter-spacing:.4px; }
-  .sh-centro { font-size:.7rem; font-weight:700; color:var(--dim); text-align:center; text-transform:uppercase; }
+  .sh-nombre { font-size:.9rem; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
 
   .slider-fila {
-    display:grid;
-    grid-template-columns:1fr 70px 1fr;
-    align-items:center;
-    gap:6px;
-    padding:7px 14px;
+    padding:10px 16px 14px;
     border-top:1px solid var(--border);
   }
-  .sl-wrap { display:flex; flex-direction:column; gap:3px; }
-  .sl-val {
-    font-size:1.1rem; font-weight:900; text-align:center;
-    padding:3px 6px; border-radius:8px;
-  }
-  .sl-wrap.izq .sl-val { color:var(--rojo); background:rgba(192,57,43,.08); }
-  .sl-wrap.der .sl-val { color:var(--azul); background:rgba(26,95,168,.08); }
-
-  input[type=range] {
-    -webkit-appearance:none; appearance:none;
-    width:100%; height:7px; border-radius:4px; outline:none; cursor:pointer;
-  }
-  input[type=range].izq {
-    direction:rtl;
-    background:linear-gradient(to left, #ddd var(--pct,0%), var(--rojo) var(--pct,0%));
-  }
-  input[type=range].der {
-    background:linear-gradient(to right, #ddd var(--pct,0%), var(--azul) var(--pct,0%));
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance:none;
-    width:22px; height:22px; border-radius:50%;
-    border:3px solid #fff;
-    box-shadow:0 1px 5px rgba(0,0,0,.28);
-    cursor:pointer;
-  }
-  input[type=range].izq::-webkit-slider-thumb { background:var(--rojo); }
-  input[type=range].der::-webkit-slider-thumb { background:var(--azul); }
-  input[type=range]::-moz-range-thumb {
-    width:22px; height:22px; border-radius:50%;
-    border:3px solid #fff;
-    box-shadow:0 1px 5px rgba(0,0,0,.28);
-    cursor:pointer;
-  }
-  input[type=range].izq::-moz-range-thumb { background:var(--rojo); }
-  input[type=range].der::-moz-range-thumb { background:var(--azul); }
-
-  .sl-centro {
-    display:flex; flex-direction:column;
-    align-items:center; gap:1px;
+  .sl-header-fila {
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:6px;
   }
   .sl-srv-name {
-    font-size:.68rem; font-weight:800; color:var(--dim);
-    text-transform:uppercase; letter-spacing:.3px;
-    text-align:center; line-height:1.2;
+    font-size:.95rem; font-weight:800; color:var(--text);
+    text-align:center; flex:1;
   }
-  .sl-fmval {
-    display:flex; align-items:center; gap:2px;
-    font-size:.85rem; font-weight:900;
+  .sl-conteo-f { font-size:1rem; font-weight:900; color:var(--rojo); min-width:28px; text-align:left; }
+  .sl-conteo-m { font-size:1rem; font-weight:900; color:var(--azul); min-width:28px; text-align:right; }
+
+  /* track bidireccional */
+  .sl-track-wrap {
+    position:relative; height:36px; display:flex; align-items:center;
   }
-  .sl-fmval .f { color:var(--rojo); }
-  .sl-fmval .sep { color:#bbb; }
-  .sl-fmval .m { color:var(--azul); }
+  .sl-track-bg {
+    position:absolute; left:0; right:0; height:8px; border-radius:4px;
+    background:#dde4ed;
+  }
+  .sl-track-fill {
+    position:absolute; height:8px; border-radius:4px;
+    pointer-events:none;
+  }
+  .sl-input-bi {
+    position:absolute; left:0; right:0;
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:36px; background:transparent;
+    outline:none; cursor:pointer; margin:0; padding:0;
+  }
+  .sl-input-bi::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width:28px; height:28px; border-radius:50%;
+    background:#fff; border:3px solid #607080;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+    cursor:grab;
+  }
+  .sl-input-bi::-moz-range-thumb {
+    width:28px; height:28px; border-radius:50%;
+    background:#fff; border:3px solid #607080;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+    cursor:grab;
+  }
+  .sl-etiquetas {
+    display:flex; justify-content:space-between;
+    font-size:.72rem; font-weight:700; color:var(--dim);
+    margin-top:2px; padding:0 2px;
+  }
+  .sl-etiquetas .izq { color:var(--rojo); }
+  .sl-etiquetas .der { color:var(--azul); }
 
   /* ── RESUMEN BARRAS ── */
   .resumen-body { padding:12px 14px 16px; }
@@ -486,22 +471,11 @@
     <!-- CABECERA SLIDERS -->
     <div class="sliders-header">
       <div class="sh-lado izq">
-        <!-- ícono mujer tradicional (símbolo Venus) -->
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="32" cy="22" r="14" stroke="#c0392b" stroke-width="5"/>
-          <line x1="32" y1="36" x2="32" y2="56" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/>
-          <line x1="22" y1="48" x2="42" y2="48" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/>
-        </svg>
+        <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="22" r="14" stroke="#c0392b" stroke-width="5"/><line x1="32" y1="36" x2="32" y2="56" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/><line x1="22" y1="48" x2="42" y2="48" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/></svg>
         <span class="sh-nombre">Mujer</span>
       </div>
-      <div class="sh-centro">Servicio</div>
       <div class="sh-lado der">
-        <!-- ícono hombre tradicional (símbolo Marte) -->
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="26" cy="36" r="14" stroke="#1a5fa8" stroke-width="5"/>
-          <line x1="36" y1="26" x2="56" y2="8" stroke="#1a5fa8" stroke-width="5" stroke-linecap="round"/>
-          <polyline points="44,8 56,8 56,20" stroke="#1a5fa8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg viewBox="0 0 64 64" fill="none"><circle cx="26" cy="36" r="14" stroke="#1a5fa8" stroke-width="5"/><line x1="36" y1="26" x2="56" y2="8" stroke="#1a5fa8" stroke-width="5" stroke-linecap="round"/><polyline points="44,8 56,8 56,20" stroke="#1a5fa8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="sh-nombre">Hombre</span>
       </div>
     </div>
@@ -761,6 +735,11 @@ async function cargarFechas(){
 }
 
 /* ─── BUILD SLIDERS ─────────────────────────────────── */
+// Slider bidireccional: centro=50 → izquierda=Mujer, derecha=Hombre
+// MIN=0 (izq extremo), MID=50 (centro/reposo), MAX=100 (der extremo)
+// Umbral: ≤25 → Mujer, ≥75 → Hombre
+const MID = 50;
+
 function buildSliders(){
   const body=document.getElementById('sliders-body');
   body.innerHTML='';
@@ -768,51 +747,68 @@ function buildSliders(){
     const fila=document.createElement('div');
     fila.className='slider-fila';
     fila.innerHTML=`
-      <div class="sl-wrap izq">
-        <div class="sl-val" id="vf${i}"></div>
-        <input type="range" class="izq" id="slf${i}" min="0" max="${MAX}" value="0" step="1"
-          oninput="moverSlider('f',${i},this.value)">
-      </div>
-      <div class="sl-centro">
+      <div class="sl-header-fila">
+        <span class="sl-conteo-f" id="cf${i}"></span>
         <span class="sl-srv-name">${srv}</span>
-        <div class="sl-fmval">
-          <span class="f" id="cf${i}"></span>
-          <span class="sep">|</span>
-          <span class="m" id="cm${i}"></span>
-        </div>
+        <span class="sl-conteo-m" id="cm${i}"></span>
       </div>
-      <div class="sl-wrap der">
-        <div class="sl-val" id="vm${i}"></div>
-        <input type="range" class="der" id="slm${i}" min="0" max="${MAX}" value="0" step="1"
-          oninput="moverSlider('m',${i},this.value)">
+      <div class="sl-track-wrap">
+        <div class="sl-track-bg"></div>
+        <div class="sl-track-fill" id="fill${i}"></div>
+        <input type="range" class="sl-input-bi" id="sl${i}"
+          min="0" max="100" value="50" step="1"
+          oninput="moverBi(${i},this.value)">
+      </div>
+      <div class="sl-etiquetas">
+        <span class="izq">← Mujer</span>
+        <span class="der">Hombre →</span>
       </div>
     `;
     body.appendChild(fila);
-    // Solo registrar si el dedo se movió horizontalmente (no scroll vertical)
-    ['f','m'].forEach(gen=>{
-      const id=gen==='f'?'slf'+i:'slm'+i;
-      const el=document.getElementById(id);
-      let _tx=null,_ty=null,_dragging=false;
-      el.addEventListener('pointerdown',e=>{_tx=e.clientX;_ty=e.clientY;_dragging=false;});
-      el.addEventListener('pointermove',e=>{
-        if(_tx===null) return;
-        const dx=Math.abs(e.clientX-_tx), dy=Math.abs(e.clientY-_ty);
-        if(dx>8 && dx>dy*1.5) _dragging=true;
-      });
-      el.addEventListener('pointerup',e=>{
-        if(_dragging) guardarSlider(gen,i,el.value);
-        _tx=null;_ty=null;_dragging=false;
-      });
-      el.addEventListener('pointercancel',()=>{_tx=null;_ty=null;_dragging=false;});
+    const el=document.getElementById('sl'+i);
+    let _tx=null,_ty=null,_dragging=false;
+    el.addEventListener('pointerdown',e=>{_tx=e.clientX;_ty=e.clientY;_dragging=false;});
+    el.addEventListener('pointermove',e=>{
+      if(_tx===null) return;
+      const dx=Math.abs(e.clientX-_tx), dy=Math.abs(e.clientY-_ty);
+      if(dx>8 && dx>dy*1.5) _dragging=true;
     });
+    el.addEventListener('pointerup',()=>{
+      if(_dragging) dispararBi(i,parseInt(el.value));
+      _tx=null;_ty=null;_dragging=false;
+    });
+    el.addEventListener('pointercancel',()=>{ resetBi(i); _tx=null;_ty=null;_dragging=false; });
   });
 }
 
-function moverSlider(gen,i,val){
+function moverBi(i,val){
   val=parseInt(val);
-  if(gen==='f') valF[i]=val; else valM[i]=val;
-  actualizarDisplaySlider(i);
+  const fill=document.getElementById('fill'+i);
+  if(val < MID){
+    // arrastrando a la izquierda → rojo desde izq hasta centro
+    const pct=(MID-val)/MID*50; // porcentaje de la mitad izquierda
+    fill.style.cssText=`left:${val}%;width:${MID-val}%;background:var(--rojo);`;
+  } else if(val > MID){
+    fill.style.cssText=`left:50%;width:${val-MID}%;background:var(--azul);`;
+  } else {
+    fill.style.cssText='width:0';
+  }
 }
+
+function resetBi(i){
+  const el=document.getElementById('sl'+i);
+  el.value=MID;
+  document.getElementById('fill'+i).style.cssText='width:0';
+}
+
+function dispararBi(i,val){
+  resetBi(i);
+  if(val<=25) guardarSlider('f',i,100);      // Mujer: llevó a izquierda
+  else if(val>=75) guardarSlider('m',i,100); // Hombre: llevó a derecha
+  // zona central (26-74): no registra
+}
+
+
 
 /* ─── ESTADO MODAL ───────────────────────────────────── */
 let _modalGen = null;
@@ -820,12 +816,6 @@ let _modalIdx = null;
 
 function guardarSlider(gen,i,val){
   val=parseInt(val);
-  // Resetear slider visualmente siempre
-  const el=document.getElementById(gen==='f'?`slf${i}`:`slm${i}`);
-  if(gen==='f') valF[i]=0; else valM[i]=0;
-  el.value=0;
-  actualizarDisplaySlider(i);
-
   // Solo registrar si superó el umbral
   if(val < UMBRAL) return;
 
@@ -885,16 +875,11 @@ function enviarModal(){
 }
 
 function actualizarDisplaySlider(i){
-  // Mostrar flecha cuando supera umbral, vacío cuando en reposo
-  const labelF = valF[i] >= UMBRAL ? '✓' : valF[i] > 0 ? '→' : '';
-  const labelM = valM[i] >= UMBRAL ? '✓' : valM[i] > 0 ? '→' : '';
-  document.getElementById(`vf${i}`).textContent = labelF;
-  document.getElementById(`vm${i}`).textContent = labelM;
-  // color track — porcentaje directo sobre MAX=100
-  const sf=document.getElementById(`slf${i}`);
-  const sm=document.getElementById(`slm${i}`);
-  sf.style.setProperty('--pct', valF[i]+'%');
-  sm.style.setProperty('--pct', valM[i]+'%');
+  // Actualizar contadores F/M desde acumulados
+  const f=acumF[SERVICIOS[i]]||0, m=acumM[SERVICIOS[i]]||0;
+  const cf=document.getElementById('cf'+i), cm=document.getElementById('cm'+i);
+  if(cf) cf.textContent=f>0?f:'';
+  if(cm) cm.textContent=m>0?m:'';
 }
 
 function actualizarTotales(){
@@ -1010,8 +995,8 @@ async function cargarDatos(){
     SERVICIOS.forEach(s=>{ acumF[s]=0; acumM[s]=0; });
 
     // Poblar desde la planilla (el script devuelve acumF/acumM ya calculados)
-    if(j.acumF){ Object.keys(j.acumF).forEach(s=>{ if(acumF.hasOwnProperty(s)) acumF[s]=Number(j.acumF[s])||0; }); }
-    if(j.acumM){ Object.keys(j.acumM).forEach(s=>{ if(acumM.hasOwnProperty(s)) acumM[s]=Number(j.acumM[s])||0; }); }
+    if(j.acumF){ Object.keys(j.acumF).forEach(s=>{ acumF[s]=Number(j.acumF[s])||0; }); }
+    if(j.acumM){ Object.keys(j.acumM).forEach(s=>{ acumM[s]=Number(j.acumM[s])||0; }); }
 
     renderResumen();
     renderIconos();
