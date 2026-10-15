@@ -999,15 +999,9 @@ async function cargarDatos(){
     // Resetear acumulados
     SERVICIOS.forEach(s=>{ acumF[s]=0; acumM[s]=0; });
 
-    // Poblar desde la planilla
-    if(j.registros){
-      j.registros.forEach(reg=>{
-        if(!acumF[reg.servicio]) acumF[reg.servicio]=0;
-        if(!acumM[reg.servicio]) acumM[reg.servicio]=0;
-        if(reg.genero==='Mujer')  acumF[reg.servicio]+=Number(reg.cantidad);
-        if(reg.genero==='Hombre') acumM[reg.servicio]+=Number(reg.cantidad);
-      });
-    }
+    // Poblar desde la planilla (el script devuelve acumF/acumM ya calculados)
+    if(j.acumF){ Object.keys(j.acumF).forEach(s=>{ if(acumF.hasOwnProperty(s)) acumF[s]=Number(j.acumF[s])||0; }); }
+    if(j.acumM){ Object.keys(j.acumM).forEach(s=>{ if(acumM.hasOwnProperty(s)) acumM[s]=Number(j.acumM[s])||0; }); }
 
     renderResumen();
     renderIconos();
