@@ -912,11 +912,11 @@ function actualizarDisplaySlider(i){
 }
 
 function actualizarTotales(){
-  const tf=valF.reduce((a,b)=>a+b,0);
-  const tm=valM.reduce((a,b)=>a+b,0);
-  document.getElementById('tot-f').textContent=tf;
-  document.getElementById('tot-m').textContent=tm;
-  document.getElementById('tot-t').textContent=tf+tm;
+  const tf=Object.values(acumF).reduce((a,b)=>a+b,0);
+  const tm=Object.values(acumM).reduce((a,b)=>a+b,0);
+  document.getElementById('tot-f').textContent=tf||0;
+  document.getElementById('tot-m').textContent=tm||0;
+  document.getElementById('tot-t').textContent=(tf+tm)||0;
 }
 
 /* ─── RESUMEN ────────────────────────────────────────── */
@@ -1001,6 +1001,7 @@ async function cargarDatos(){
     if(j.acumM){ Object.keys(j.acumM).forEach(s=>{ acumM[s]=Number(j.acumM[s])||0; }); }
 
     renderResumen();
+    actualizarTotales();
     renderIconos();
 
     // Gráficas encuesta
