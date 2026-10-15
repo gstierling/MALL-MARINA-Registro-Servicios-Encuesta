@@ -85,14 +85,7 @@
   .fecha-opt:last-child { border-bottom:none; }
   .fecha-opt:hover { background:var(--panel2); }
   .fecha-opt.activa { color:var(--azul); font-weight:800; }
-  .btn-hoy {
-    background:var(--rojo);
-    border:none; border-radius:10px;
-    color:#fff; font-family:'Nunito',sans-serif;
-    font-size:.9rem; font-weight:800;
-    padding:8px 14px; cursor:pointer;
-    white-space:nowrap;
-  }
+
 
   /* ── MAIN ── */
   main { padding:14px; max-width:600px; margin:0 auto; }
@@ -469,7 +462,6 @@
     <svg class="flecha" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
   <div class="fecha-lista" id="fecha-lista"></div>
-  <button class="btn-hoy" onclick="irAHoy()">Hoy</button>
 </div>
 
 <main>
@@ -723,7 +715,7 @@ function labelFecha(key){
   return dia.charAt(0).toUpperCase()+dia.slice(1)+' '+d+' de '+MESES[m-1];
 }
 
-let fechaActual = domingoKey(new Date());
+let fechaActual = hoyKey();
 let todasFechas = [];
 
 const wrapF   = document.getElementById('fecha-wrap');
@@ -739,7 +731,7 @@ function pintarFechas(fechas){
   fechas.forEach(k=>{
     const o=document.createElement('div');
     o.className='fecha-opt'+(k===fechaActual?' activa':'');
-    o.textContent=labelFecha(k)+(k===domingoKey(new Date())?' (hoy)':'');
+    o.textContent=labelFecha(k)+(k===hoyKey()?' (hoy)':'');
     o.addEventListener('click',()=>{
       fechaActual=k;
       labelF.textContent=o.textContent;
@@ -749,11 +741,11 @@ function pintarFechas(fechas){
     });
     listaF.appendChild(o);
   });
-  labelF.textContent=labelFecha(fechaActual)+(fechaActual===domingoKey(new Date())?' (hoy)':'');
+  labelF.textContent=labelFecha(fechaActual)+(fechaActual===hoyKey()?' (hoy)':'');
 }
 
 function irAHoy(){
-  fechaActual=domingoKey(new Date());
+  fechaActual=hoyKey();
   pintarFechas(todasFechas);
   cargarDatos();
 }
@@ -763,13 +755,15 @@ async function cargarFechas(){
     const r=await fetch(ENDPOINT+'?action=getFechas&t='+Date.now());
     const j=await r.json();
     let fechas=(j&&j.fechas)?j.fechas:[];
-    const hoy=domingoKey(new Date());
+    // Filtrar solo domingos, pero siempre incluir hoy (para pruebas entre semana)
+    const hoy=hoyKey();
+    fechas=fechas.filter(k=>{ const [y,m,d]=k.split('-').map(Number); return new Date(y,m-1,d).getDay()===0; });
     if(!fechas.includes(hoy)) fechas.unshift(hoy);
     fechas.sort((a,b)=>b.localeCompare(a));
     todasFechas=fechas;
     pintarFechas(fechas);
   }catch(e){
-    todasFechas=[domingoKey(new Date())];
+    todasFechas=[hoyKey()];
     pintarFechas(todasFechas);
   }
 }
@@ -1024,7 +1018,8 @@ async function cargarDatos(){
     // Actualizar fechas si hay nuevas
     if(j.fechas){
       let fechas=j.fechas;
-      const hoy=domingoKey(new Date());
+      const hoy=hoyKey();
+      fechas=fechas.filter(k=>{ const [y,m,d]=k.split('-').map(Number); return new Date(y,m-1,d).getDay()===0; });
       if(!fechas.includes(hoy)) fechas.unshift(hoy);
       fechas.sort((a,b)=>b.localeCompare(a));
       todasFechas=fechas;
