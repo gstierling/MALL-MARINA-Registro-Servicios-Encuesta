@@ -779,8 +779,7 @@ function buildSliders(){
       <div class="sl-wrap izq">
         <div class="sl-val" id="vf${i}">0</div>
         <input type="range" class="izq" id="slf${i}" min="0" max="${MAX}" value="0" step="1"
-          oninput="moverSlider('f',${i},this.value)"
-          onchange="guardarSlider('f',${i},this.value)">
+          oninput="moverSlider('f',${i},this.value)">
       </div>
       <div class="sl-centro">
         <span class="sl-srv-name">${srv}</span>
@@ -793,11 +792,27 @@ function buildSliders(){
       <div class="sl-wrap der">
         <div class="sl-val" id="vm${i}">0</div>
         <input type="range" class="der" id="slm${i}" min="0" max="${MAX}" value="0" step="1"
-          oninput="moverSlider('m',${i},this.value)"
-          onchange="guardarSlider('m',${i},this.value)">
+          oninput="moverSlider('m',${i},this.value)">
       </div>
     `;
     body.appendChild(fila);
+    // Solo registrar si el dedo se movió horizontalmente (no scroll vertical)
+    ['f','m'].forEach(gen=>{
+      const id=gen==='f'?'slf'+i:'slm'+i;
+      const el=document.getElementById(id);
+      let _tx=null,_ty=null,_dragging=false;
+      el.addEventListener('pointerdown',e=>{_tx=e.clientX;_ty=e.clientY;_dragging=false;});
+      el.addEventListener('pointermove',e=>{
+        if(_tx===null) return;
+        const dx=Math.abs(e.clientX-_tx), dy=Math.abs(e.clientY-_ty);
+        if(dx>8 && dx>dy*1.5) _dragging=true;
+      });
+      el.addEventListener('pointerup',e=>{
+        if(_dragging) guardarSlider(gen,i,el.value);
+        _tx=null;_ty=null;_dragging=false;
+      });
+      el.addEventListener('pointercancel',()=>{_tx=null;_ty=null;_dragging=false;});
+    });
   });
 }
 
