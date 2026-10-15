@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MALL MARINA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul:     #1a5fa8;
+    --azul-dk:  #0d3f7a;
+    --rojo:     #c0392b;
+    --rojo-dk:  #9e2f22;
+    --verde:    #1b7a4a;
+    --bg:       #f0f4f8;
+    --panel:    #ffffff;
+    --panel2:   #eaf0f7;
+    --border:   #d0dce8;
+    --text:     #0d1f33;
+    --dim:      #607080;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+  body {
+    font-family:'Nunito',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background:linear-gradient(135deg,var(--azul-dk) 0%,var(--azul) 100%);
+    color:#fff;
+    padding:16px 16px 12px;
+    text-align:center;
+  }
+  header h1 { font-size:2.4rem; font-weight:900; letter-spacing:2px; line-height:1; }
+  header p  { font-size:.95rem; opacity:.7; margin-top:3px; }
+
+  /* ── SELECTOR FECHA ── */
+  .fecha-wrap {
+    position:relative;
+    display:flex;
+    justify-content:center;
+    background:var(--azul-dk);
+    padding:10px 16px;
+    gap:8px;
+  }
+  .fecha-btn {
+    display:flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:10px;
+    color:#fff;
+    font-family:'Nunito',sans-serif;
+    font-size:1rem; font-weight:700;
+    padding:8px 14px;
+    cursor:pointer;
+    flex:1; max-width:320px;
+    justify-content:space-between;
+  }
+  .fecha-btn .flecha { width:14px; height:14px; flex-shrink:0; transition:transform .15s; }
+  .fecha-wrap.abierto .flecha { transform:rotate(180deg); }
+  .fecha-lista {
+    display:none;
+    position:absolute;
+    top:calc(100% + 4px);
+    left:50%; transform:translateX(-50%);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    min-width:220px; max-width:88vw;
+    max-height:240px; overflow-y:auto;
+    z-index:50;
+    box-shadow:0 10px 28px rgba(0,0,0,.18);
+  }
+  .fecha-wrap.abierto .fecha-lista { display:block; }
+  .fecha-opt {
+    padding:10px 14px;
+    font-weight:600; font-size:.95rem;
+    cursor:pointer;
+    border-bottom:1px solid var(--border);
+  }
+  .fecha-opt:last-child { border-bottom:none; }
+  .fecha-opt:hover { background:var(--panel2); }
+  .fecha-opt.activa { color:var(--azul); font-weight:800; }
+  .btn-hoy {
+    background:var(--rojo);
+    border:none; border-radius:10px;
+    color:#fff; font-family:'Nunito',sans-serif;
+    font-size:.9rem; font-weight:800;
+    padding:8px 14px; cursor:pointer;
+    white-space:nowrap;
+  }
+
+  /* ── MAIN ── */
+  main { padding:14px; max-width:600px; margin:0 auto; }
+
+  /* ── SECCIÓN ── */
+  .card {
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 2px 10px rgba(0,0,0,.07);
+    overflow:hidden;
+    margin-bottom:14px;
+  }
+  .card-header {
+    background:linear-gradient(135deg,var(--azul-dk),var(--azul));
+    color:#fff;
+    padding:11px 16px;
+    font-size:.9rem; font-weight:800;
+    text-transform:uppercase; letter-spacing:.5px;
+    display:flex; align-items:center; gap:8px;
+  }
+
+  /* ── TOTALES ── */
+  .totales {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:0;
+    border-bottom:1px solid var(--border);
+  }
+  .total-item {
+    padding:14px 8px;
+    text-align:center;
+    border-right:1px solid var(--border);
+  }
+  .total-item:last-child { border-right:none; }
+  .total-lbl { font-size:.85rem; font-weight:900; text-transform:uppercase; color:var(--dim); margin-bottom:4px; letter-spacing:.4px; }
+  .total-num { font-size:2.6rem; font-weight:900; line-height:1; }
+  .total-item.f .total-num { color:var(--rojo); }
+  .total-item.t .total-num { color:var(--verde); }
+  .total-item.m .total-num { color:var(--azul); }
+
+  /* ── SLIDERS ── */
+  .sliders-header {
+    display:grid;
+    grid-template-columns:1fr 70px 1fr;
+    align-items:center;
+    padding:12px 14px 8px;
+    gap:6px;
+  }
+  .sh-lado {
+    display:flex; flex-direction:column;
+    align-items:center; gap:4px;
+  }
+  .sh-lado svg { width:38px; height:38px; }
+  .sh-lado.izq .sh-nombre { color:var(--rojo); }
+  .sh-lado.der .sh-nombre { color:var(--azul); }
+  .sh-nombre { font-size:.85rem; font-weight:800; text-transform:uppercase; letter-spacing:.4px; }
+  .sh-centro { font-size:.7rem; font-weight:700; color:var(--dim); text-align:center; text-transform:uppercase; }
+
+  .slider-fila {
+    display:grid;
+    grid-template-columns:1fr 70px 1fr;
+    align-items:center;
+    gap:6px;
+    padding:7px 14px;
+    border-top:1px solid var(--border);
+  }
+  .sl-wrap { display:flex; flex-direction:column; gap:3px; }
+  .sl-val {
+    font-size:1.1rem; font-weight:900; text-align:center;
+    padding:3px 6px; border-radius:8px;
+  }
+  .sl-wrap.izq .sl-val { color:var(--rojo); background:rgba(192,57,43,.08); }
+  .sl-wrap.der .sl-val { color:var(--azul); background:rgba(26,95,168,.08); }
+
+  input[type=range] {
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:7px; border-radius:4px; outline:none; cursor:pointer;
+  }
+  input[type=range].izq {
+    direction:rtl;
+    background:linear-gradient(to left, #ddd var(--pct,0%), var(--rojo) var(--pct,0%));
+  }
+  input[type=range].der {
+    background:linear-gradient(to right, #ddd var(--pct,0%), var(--azul) var(--pct,0%));
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width:22px; height:22px; border-radius:50%;
+    border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(0,0,0,.28);
+    cursor:pointer;
+  }
+  input[type=range].izq::-webkit-slider-thumb { background:var(--rojo); }
+  input[type=range].der::-webkit-slider-thumb { background:var(--azul); }
+  input[type=range]::-moz-range-thumb {
+    width:22px; height:22px; border-radius:50%;
+    border:3px solid #fff;
+    box-shadow:0 1px 5px rgba(0,0,0,.28);
+    cursor:pointer;
+  }
+  input[type=range].izq::-moz-range-thumb { background:var(--rojo); }
+  input[type=range].der::-moz-range-thumb { background:var(--azul); }
+
+  .sl-centro {
+    display:flex; flex-direction:column;
+    align-items:center; gap:1px;
+  }
+  .sl-srv-name {
+    font-size:.68rem; font-weight:800; color:var(--dim);
+    text-transform:uppercase; letter-spacing:.3px;
+    text-align:center; line-height:1.2;
+  }
+  .sl-fmval {
+    display:flex; align-items:center; gap:2px;
+    font-size:.85rem; font-weight:900;
+  }
+  .sl-fmval .f { color:var(--rojo); }
+  .sl-fmval .sep { color:#bbb; }
+  .sl-fmval .m { color:var(--azul); }
+
+  /* ── RESUMEN BARRAS ── */
+  .resumen-body { padding:12px 14px 16px; }
+  .res-fila {
+    display:flex; align-items:center; gap:8px;
+    margin-bottom:9px;
+  }
+  .res-fila:last-child { margin-bottom:0; }
+  .res-srv { font-size:.78rem; font-weight:800; width:110px; flex-shrink:0; color:var(--text); }
+  .res-tracks { flex:1; display:flex; flex-direction:column; gap:3px; }
+  .res-track {
+    height:9px; background:var(--panel2);
+    border-radius:5px; overflow:hidden;
+  }
+  .res-fill { height:100%; border-radius:5px; transition:width .4s ease; }
+  .res-fill.f { background:var(--rojo); }
+  .res-fill.m { background:var(--azul); }
+  .res-tots {
+    display:flex; flex-direction:column;
+    align-items:flex-end; gap:2px;
+    min-width:36px;
+  }
+  .res-tots .rf { font-size:.8rem; font-weight:900; color:var(--rojo); }
+  .res-tots .rm { font-size:.8rem; font-weight:900; color:var(--azul); }
+
+  /* ── ÍCONOS SERVICIOS ── */
+  .iconos-grid {
+    display:flex; justify-content:space-around; align-items:center;
+    padding:20px 10px 20px; gap:0;
+    background:transparent;
+  }
+  .icono-card {
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    gap:0; background:transparent;
+    border-right:1px solid var(--border);
+    padding:10px 8px;
+  }
+  .icono-card:last-child { border-right:none; }
+  .icono-card svg { width:56px; height:56px; margin-bottom:6px; }
+  .icono-fa { font-size:52px; line-height:1; margin-bottom:6px; display:block; }
+  .icono-svg { width:56px; height:56px; margin-bottom:6px; display:block; }
+  img.twemoji { width:56px; height:56px; margin-bottom:6px; }
+  .icono-total {
+    font-size:2.6rem; font-weight:900;
+    line-height:1; margin-bottom:5px;
+  }
+  .icono-total.bici   { color:#4CAF50; }
+  .icono-total.patin  { color:#FF9800; }
+  .icono-total.dado   { color:#9C27B0; }
+  .icono-label {
+    font-size:.82rem; font-weight:900; color:var(--dim);
+    text-align:center; letter-spacing:.4px; text-transform:uppercase;
+  }
+
+  /* ── TOGGLE BTN ── */
+  .toggle-btn {
+    display:block; width:100%;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--azul);
+    font-family:'Nunito',sans-serif;
+    font-size:.9rem; font-weight:800;
+    padding:10px 16px;
+    cursor:pointer;
+    text-align:center;
+    margin-bottom:14px;
+    letter-spacing:.3px;
+  }
+  .toggle-btn:hover { background:var(--border); }
+
+  /* ── ENCUESTA (estilo BENEDICTINO) ── */
+  .encuesta-body {
+    padding:20px 18px 10px;
+    background:#fff;
+  }
+  .enc-bloque { margin-bottom:22px; }
+  .enc-pregunta {
+    font-weight:800; font-size:1.19rem; line-height:1.4;
+    color:#1a3a2a; margin-bottom:12px;
+  }
+  .enc-pregunta span { color:var(--azul); }
+  /* chips estilo BENEDICTINO: fondo beige, borde suave, full-width apilados */
+  .enc-chips { display:flex; flex-direction:column; gap:8px; }
+  .enc-chip {
+    background:#f0ede8;
+    border:2px solid #ddd8d0;
+    border-radius:12px;
+    color:#1a3a2a;
+    font-family:'Nunito',sans-serif;
+    font-size:.95rem; font-weight:700;
+    padding:11px 16px;
+    cursor:pointer;
+    transition:all .15s;
+    user-select:none;
+    text-align:left;
+    width:100%;
+  }
+  .enc-chip.sel {
+    background:var(--azul-dk);
+    border-color:var(--azul-dk);
+    color:#fff;
+  }
+  .enc-chip:active { filter:brightness(.92); }
+  .enc-input-txt {
+    width:100%;
+    background:#f0ede8;
+    border:2px solid #ddd8d0;
+    border-radius:12px;
+    color:#1a3a2a;
+    font-family:'Nunito',sans-serif;
+    font-size:.95rem; font-weight:600;
+    padding:12px 14px; outline:none;
+    resize:vertical; min-height:80px;
+  }
+  .enc-input-txt:focus { border-color:var(--azul); }
+  .btn-enviar-enc {
+    display:block; width:80%; margin:4px auto 18px;
+    background:var(--rojo);
+    border:none; border-radius:12px;
+    color:#fff; font-family:'Nunito',sans-serif;
+    font-size:1rem; font-weight:900;
+    padding:14px; cursor:pointer;
+  }
+  .btn-enviar-enc:hover { filter:brightness(1.1); }
+
+  /* ── GRÁFICAS ── */
+  .graficas-body {
+    padding:14px;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  @media(min-width:520px){
+    .graficas-body { flex-direction:row; }
+    .grafico-blk { flex:1; }
+  }
+  .grafico-blk { }
+  .grafico-titulo { font-weight:800; font-size:1.19rem; margin-bottom:10px; color:#1a3a2a; text-align:center; line-height:1.4; }
+  .donut-wrap {
+    position:relative;
+    width:100%; max-width:200px;
+    aspect-ratio:1/1;
+    margin:0 auto 12px;
+  }
+  .sin-datos {
+    display:none;
+    position:absolute; inset:0;
+    align-items:center; justify-content:center;
+    font-size:.82rem; font-weight:700; color:var(--dim);
+  }
+  .sin-datos.vis { display:flex; }
+  .grafico-leyenda {
+    list-style:none; display:flex; flex-direction:column; gap:7px;
+  }
+  .ley-item { display:flex; align-items:center; gap:7px; font-size:.85rem; }
+  .ley-dot { width:11px; height:11px; border-radius:3px; flex-shrink:0; }
+  .ley-label { flex:1; font-weight:700; }
+  .ley-val { font-weight:900; color:var(--dim); white-space:nowrap; }
+
+  /* ── MODAL SORTEO ── */
+  #modal-sorteo {
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:200;
+    align-items:center; justify-content:center;
+    padding:16px;
+  }
+  #modal-sorteo.vis { display:flex; }
+  .modal-box {
+    background:var(--panel);
+    border-radius:18px;
+    width:100%; max-width:420px;
+    max-height:90vh; overflow-y:auto;
+    box-shadow:0 12px 40px rgba(0,0,0,.3);
+    padding:0;
+  }
+  .modal-header {
+    background:linear-gradient(135deg,var(--azul-dk),var(--azul));
+    color:#fff;
+    padding:14px 18px;
+    font-size:1rem; font-weight:900;
+    border-radius:18px 18px 0 0;
+    text-align:center; letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .modal-body { padding:18px 16px 8px; }
+  .modal-campo { margin-bottom:14px; }
+  .modal-campo label {
+    display:block;
+    font-size:.82rem; font-weight:900;
+    text-transform:uppercase; letter-spacing:.4px;
+    color:var(--dim); margin-bottom:5px;
+  }
+  .modal-campo input {
+    width:100%;
+    background:var(--panel2);
+    border:2px solid var(--border);
+    border-radius:10px;
+    color:var(--text);
+    font-family:'Nunito',sans-serif;
+    font-size:1rem; font-weight:600;
+    padding:11px 13px; outline:none;
+  }
+  .modal-campo input:focus { border-color:var(--azul); }
+  .modal-btns {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:10px; padding:10px 16px 18px;
+  }
+  .btn-modal-cancelar {
+    background:var(--rojo);
+    border:none; border-radius:11px;
+    color:#fff; font-family:'Nunito',sans-serif;
+    font-size:1rem; font-weight:900;
+    padding:13px; cursor:pointer;
+  }
+  .btn-modal-enviar {
+    background:var(--azul);
+    border:none; border-radius:11px;
+    color:#fff; font-family:'Nunito',sans-serif;
+    font-size:1rem; font-weight:900;
+    padding:13px; cursor:pointer;
+  }
+  .btn-modal-cancelar:hover { filter:brightness(1.1); }
+  .btn-modal-enviar:hover   { filter:brightness(1.1); }
+
+  /* ── TOAST ── */
+  #toast {
+    position:fixed; bottom:20px; left:50%;
+    transform:translateX(-50%) translateY(60px);
+    background:var(--verde); color:#fff;
+    font-family:'Nunito',sans-serif;
+    font-size:.9rem; font-weight:800;
+    padding:11px 22px; border-radius:30px;
+    box-shadow:0 4px 16px rgba(0,0,0,.2);
+    transition:transform .3s ease;
+    z-index:999; pointer-events:none;
+    white-space:nowrap;
+  }
+  #toast.show { transform:translateX(-50%) translateY(0); }
+  #toast.err  { background:var(--rojo); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MALL MARINA</h1>
+  <p>CicloRecreoVía · Registros</p>
+</header>
+
+<!-- SELECTOR FECHA -->
+<div class="fecha-wrap" id="fecha-wrap">
+  <button class="fecha-btn" id="fecha-btn" type="button">
+    <span id="fecha-label">Cargando…</span>
+    <svg class="flecha" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="fecha-lista" id="fecha-lista"></div>
+  <button class="btn-hoy" onclick="irAHoy()">Hoy</button>
+</div>
+
+<main>
+
+  <!-- TOTALES -->
+  <div class="card">
+    <div class="totales">
+      <div class="total-item f">
+        <div class="total-lbl">Mujeres</div>
+        <div class="total-num" id="tot-f">0</div>
+      </div>
+      <div class="total-item t">
+        <div class="total-lbl">Total</div>
+        <div class="total-num" id="tot-t">0</div>
+      </div>
+      <div class="total-item m">
+        <div class="total-lbl">Hombres</div>
+        <div class="total-num" id="tot-m">0</div>
+      </div>
+    </div>
+
+    <!-- CABECERA SLIDERS -->
+    <div class="sliders-header">
+      <div class="sh-lado izq">
+        <!-- ícono mujer tradicional (símbolo Venus) -->
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="22" r="14" stroke="#c0392b" stroke-width="5"/>
+          <line x1="32" y1="36" x2="32" y2="56" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/>
+          <line x1="22" y1="48" x2="42" y2="48" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <span class="sh-nombre">Mujer</span>
+      </div>
+      <div class="sh-centro">Servicio</div>
+      <div class="sh-lado der">
+        <!-- ícono hombre tradicional (símbolo Marte) -->
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="26" cy="36" r="14" stroke="#1a5fa8" stroke-width="5"/>
+          <line x1="36" y1="26" x2="56" y2="8" stroke="#1a5fa8" stroke-width="5" stroke-linecap="round"/>
+          <polyline points="44,8 56,8 56,20" stroke="#1a5fa8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="sh-nombre">Hombre</span>
+      </div>
+    </div>
+
+    <!-- FILAS DE SLIDERS -->
+    <div id="sliders-body"></div>
+  </div>
+
+  <!-- RESUMEN GRÁFICO -->
+  <div class="card">
+    <div class="card-header">📊 Resumen acumulado del día</div>
+    <div class="resumen-body" id="resumen-body">
+      <p style="color:var(--dim);font-size:.85rem;text-align:center;padding:8px 0">Sin datos aún</p>
+    </div>
+  </div>
+
+  <!-- ÍCONOS SERVICIOS -->
+  <div class="card">
+    <div class="iconos-grid" id="iconos-grid">
+      <!-- generado por JS -->
+    </div>
+  </div>
+
+  <!-- TOGGLE ENCUESTA -->
+  <button class="toggle-btn" id="btn-toggle-enc" onclick="toggleSeccion('enc')">▼ Mostrar Encuesta</button>
+
+  <!-- ENCUESTA -->
+  <div class="card" id="sec-enc" style="display:none">
+    <div class="card-header" style="background:#fff;color:#1a3a2a;text-align:center;font-size:1.25rem;font-weight:900;letter-spacing:.3px;border-bottom:1px solid var(--border);">Encuesta rápida</div>
+    <div class="encuesta-body">
+
+      <!-- P1 -->
+      <div class="enc-bloque">
+        <p class="enc-pregunta">1. ¿En qué es particularmente <span>MEJOR MALL MARINA</span> que otros centros comerciales?</p>
+        <div class="enc-chips" id="chips-p1">
+          <button class="enc-chip" data-val="Accesibilidad, cercanía y/o ubicación" onclick="toggleChipUnico(this,'p1')">Accesibilidad, cercanía y/o ubicación</button>
+          <button class="enc-chip" data-val="Ambiente, espacios y amplitud" onclick="toggleChipUnico(this,'p1')">Ambiente, espacios y amplitud</button>
+          <button class="enc-chip" data-val="Apoya el deporte" onclick="toggleChipUnico(this,'p1')">Apoya el deporte</button>
+          <button class="enc-chip" data-val="Atención y servicio" onclick="toggleChipUnico(this,'p1')">Atención y servicio</button>
+          <button class="enc-chip" data-val="Familiar" onclick="toggleChipUnico(this,'p1')">Familiar</button>
+          <button class="enc-chip" data-val="Limpieza" onclick="toggleChipUnico(this,'p1')">Limpieza</button>
+          <button class="enc-chip" data-val="Seguridad" onclick="toggleChipUnico(this,'p1')">Seguridad</button>
+          <button class="enc-chip" data-val="Mejores precios" onclick="toggleChipUnico(this,'p1')">Mejores precios</button>
+          <button class="enc-chip" data-val="Variedad de locales" onclick="toggleChipUnico(this,'p1')">Variedad de locales</button>
+          <button class="enc-chip" data-val="En nada" onclick="toggleChipUnico(this,'p1')">En nada</button>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="enc-bloque">
+        <p class="enc-pregunta">2. ¿Cuál es el mayor <span>APORTE de MALL MARINA</span> al estar en CicloRecreoVía?</p>
+        <div class="enc-chips" id="chips-p2">
+          <button class="enc-chip" data-val="Actividad física" onclick="toggleChipUnico(this,'p2')">Actividad física</button>
+          <button class="enc-chip" data-val="Comunidad" onclick="toggleChipUnico(this,'p2')">Comunidad</button>
+          <button class="enc-chip" data-val="Familia" onclick="toggleChipUnico(this,'p2')">Familia</button>
+          <button class="enc-chip" data-val="Recreación" onclick="toggleChipUnico(this,'p2')">Recreación</button>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="enc-bloque">
+        <p class="enc-pregunta">3. ¿Participa usted normalmente en <span>OTROS EVENTOS</span> deportivos o recreativos en Viña del Mar o <span>SOLO EN CICLORECREOVÍA</span>?</p>
+        <div class="enc-chips" id="chips-p3">
+          <button class="enc-chip" data-val="Solo en CicloRecreoVía" onclick="toggleChipUnico(this,'p3')">Solo en CicloRecreoVía</button>
+          <button class="enc-chip" data-val="En CicloRecreoVía y en otros" onclick="toggleChipUnico(this,'p3')">En CicloRecreoVía y en otros</button>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="enc-bloque">
+        <p class="enc-pregunta">4. ¿Algún comentario?</p>
+        <textarea class="enc-input-txt" id="enc-comentario" placeholder="Escribe aquí tu comentario (opcional)" maxlength="400"></textarea>
+      </div>
+
+      <button class="btn-enviar-enc" id="btn-enc" type="button" onclick="enviarEncuesta()">Enviar respuestas</button>
+    </div>
+  </div>
+
+  <!-- TOGGLE GRÁFICAS -->
+  <button class="toggle-btn" id="btn-toggle-graf" onclick="toggleSeccion('graf')">▼ Mostrar Gráficas</button>
+
+  <!-- GRÁFICAS -->
+  <div class="card" id="sec-graf" style="display:none">
+    <div class="card-header" style="background:#fff;color:#1a3a2a;text-align:center;font-size:1.25rem;font-weight:900;letter-spacing:.3px;border-bottom:1px solid var(--border);">Resultados de encuesta</div>
+    <div class="graficas-body">
+      <div class="grafico-blk">
+        <h3 class="grafico-titulo">MEJOR Mall Marina que otros</h3>
+        <div class="donut-wrap">
+          <canvas id="chart-1"></canvas>
+          <p class="sin-datos vis" id="sin-1">Sin respuestas aún</p>
+        </div>
+        <ul class="grafico-leyenda" id="ley-1"></ul>
+      </div>
+      <div class="grafico-blk">
+        <h3 class="grafico-titulo">Mayor APORTE de Mall Marina en CicloRecreoVía</h3>
+        <div class="donut-wrap">
+          <canvas id="chart-2"></canvas>
+          <p class="sin-datos vis" id="sin-2">Sin respuestas aún</p>
+        </div>
+        <ul class="grafico-leyenda" id="ley-2"></ul>
+      </div>
+      <div class="grafico-blk">
+        <h3 class="grafico-titulo">¿Participa SOLO en CICLORECREOVÍA o en otros también?</h3>
+        <div class="donut-wrap">
+          <canvas id="chart-3"></canvas>
+          <p class="sin-datos vis" id="sin-3">Sin respuestas aún</p>
+        </div>
+        <ul class="grafico-leyenda" id="ley-3"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN BBDD -->
+  <a href="https://docs.google.com/spreadsheets/d/1BaIXg3uoVCRyd3hRxgk8OrHPRkQpabiAotst9nU5yRs/edit" target="_blank" style="
+    display:block; width:100%; max-width:600px; margin:0 auto 20px;
+    background:#1b7a4a; color:#fff;
+    font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900;
+    text-align:center; text-decoration:none;
+    padding:14px; border-radius:14px;
+    letter-spacing:1px;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
+  ">BBDD</a>
+
+</main>
+
+<div id="toast"></div>
+
+<!-- MODAL SORTEO -->
+<div id="modal-sorteo" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-header" id="modal-titulo">Registro Sorteo</div>
+    <div class="modal-body">
+      <div class="modal-campo">
+        <label for="ms-nombre">Nombre</label>
+        <input type="text" id="ms-nombre" placeholder="Tu nombre" autocomplete="given-name">
+      </div>
+      <div class="modal-campo">
+        <label for="ms-apellido">Apellido</label>
+        <input type="text" id="ms-apellido" placeholder="Tu apellido" autocomplete="family-name">
+      </div>
+      <div class="modal-campo">
+        <label for="ms-rut">RUT</label>
+        <input type="text" id="ms-rut" placeholder="12.345.678-9" inputmode="text" autocomplete="off">
+      </div>
+      <div class="modal-campo">
+        <label for="ms-cel">Celular</label>
+        <input type="tel" id="ms-cel" placeholder="+56 9 1234 5678" inputmode="tel" autocomplete="tel">
+      </div>
+      <div class="modal-campo">
+        <label for="ms-correo">Correo</label>
+        <input type="email" id="ms-email" placeholder="correo@ejemplo.com" inputmode="email" autocomplete="email">
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancelar" onclick="cancelarModal()">Cancelar</button>
+      <button class="btn-modal-enviar"   onclick="enviarModal()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+/* ─── CONFIG ─────────────────────────────────────────── */
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbwOyEpHp2HNyrnuGXgrzwrDMBZHHw_EBRbrTzrrpXfI9NbViLHReC7IN3Vv3mNN6tLb/exec";
+const MAX = 100;   // slider va 0–100; umbral de disparo al 75%
+const UMBRAL = 75; // % mínimo para registrar al soltar
+const REFRESH_MS = 30000;
+
+const SERVICIOS = [
+  "Mec. Bicis",
+  "Mec. Patines",
+  "Sorteo",
+  "Sorteo + M. Bicis",
+  "Sorteo + M. Patines"
+];
+
+// Qué sub-servicios implica cada opción (para registro expandido)
+const EXPANSION = {
+  "Mec. Bicis":         ["Mec. Bicis"],
+  "Mec. Patines":       ["Mec. Patines"],
+  "Sorteo":             ["Sorteo"],
+  "Sorteo + M. Bicis":  ["Sorteo", "Mec. Bicis"],
+  "Sorteo + M. Patines":["Sorteo", "Mec. Patines"]
+};
+
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DIAS  = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+
+/* ─── ESTADO ─────────────────────────────────────────── */
+let valF = [0,0,0,0,0];
+let valM = [0,0,0,0,0];
+// acumulado del día desde la planilla (para resumen)
+let acumF = {}; // { "Mec. Bicis": N, ... }
+let acumM = {};
+SERVICIOS.forEach(s => { acumF[s]=0; acumM[s]=0; });
+
+/* ─── FECHAS ─────────────────────────────────────────── */
+function hoyKey(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function domingoKey(d){
+  const dd = new Date(d);
+  dd.setDate(dd.getDate() - dd.getDay());
+  return dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+}
+function labelFecha(key){
+  const [y,m,d] = key.split('-').map(Number);
+  const dt = new Date(y,m-1,d);
+  const dia = DIAS[dt.getDay()]; 
+  return dia.charAt(0).toUpperCase()+dia.slice(1)+' '+d+' de '+MESES[m-1];
+}
+
+let fechaActual = domingoKey(new Date());
+let todasFechas = [];
+
+const wrapF   = document.getElementById('fecha-wrap');
+const btnF    = document.getElementById('fecha-btn');
+const labelF  = document.getElementById('fecha-label');
+const listaF  = document.getElementById('fecha-lista');
+
+btnF.addEventListener('click', ()=> wrapF.classList.toggle('abierto'));
+document.addEventListener('click', ev => { if(!wrapF.contains(ev.target)) wrapF.classList.remove('abierto'); });
+
+function pintarFechas(fechas){
+  listaF.innerHTML='';
+  fechas.forEach(k=>{
+    const o=document.createElement('div');
+    o.className='fecha-opt'+(k===fechaActual?' activa':'');
+    o.textContent=labelFecha(k)+(k===domingoKey(new Date())?' (hoy)':'');
+    o.addEventListener('click',()=>{
+      fechaActual=k;
+      labelF.textContent=o.textContent;
+      wrapF.classList.remove('abierto');
+      pintarFechas(fechas);
+      cargarDatos();
+    });
+    listaF.appendChild(o);
+  });
+  labelF.textContent=labelFecha(fechaActual)+(fechaActual===domingoKey(new Date())?' (hoy)':'');
+}
+
+function irAHoy(){
+  fechaActual=domingoKey(new Date());
+  pintarFechas(todasFechas);
+  cargarDatos();
+}
+
+async function cargarFechas(){
+  try{
+    const r=await fetch(ENDPOINT+'?action=getFechas&t='+Date.now());
+    const j=await r.json();
+    let fechas=(j&&j.fechas)?j.fechas:[];
+    const hoy=domingoKey(new Date());
+    if(!fechas.includes(hoy)) fechas.unshift(hoy);
+    fechas.sort((a,b)=>b.localeCompare(a));
+    todasFechas=fechas;
+    pintarFechas(fechas);
+  }catch(e){
+    todasFechas=[domingoKey(new Date())];
+    pintarFechas(todasFechas);
+  }
+}
+
+/* ─── BUILD SLIDERS ─────────────────────────────────── */
+function buildSliders(){
+  const body=document.getElementById('sliders-body');
+  body.innerHTML='';
+  SERVICIOS.forEach((srv,i)=>{
+    const fila=document.createElement('div');
+    fila.className='slider-fila';
+    fila.innerHTML=`
+      <div class="sl-wrap izq">
+        <div class="sl-val" id="vf${i}">0</div>
+        <input type="range" class="izq" id="slf${i}" min="0" max="${MAX}" value="0" step="1"
+          oninput="moverSlider('f',${i},this.value)"
+          onchange="guardarSlider('f',${i},this.value)">
+      </div>
+      <div class="sl-centro">
+        <span class="sl-srv-name">${srv}</span>
+        <div class="sl-fmval">
+          <span class="f" id="cf${i}">0</span>
+          <span class="sep">|</span>
+          <span class="m" id="cm${i}">0</span>
+        </div>
+      </div>
+      <div class="sl-wrap der">
+        <div class="sl-val" id="vm${i}">0</div>
+        <input type="range" class="der" id="slm${i}" min="0" max="${MAX}" value="0" step="1"
+          oninput="moverSlider('m',${i},this.value)"
+          onchange="guardarSlider('m',${i},this.value)">
+      </div>
+    `;
+    body.appendChild(fila);
+  });
+}
+
+function moverSlider(gen,i,val){
+  val=parseInt(val);
+  if(gen==='f') valF[i]=val; else valM[i]=val;
+  actualizarDisplaySlider(i);
+}
+
+/* ─── ESTADO MODAL ───────────────────────────────────── */
+let _modalGen = null;
+let _modalIdx = null;
+
+function guardarSlider(gen,i,val){
+  val=parseInt(val);
+  // Resetear slider visualmente siempre
+  const el=document.getElementById(gen==='f'?`slf${i}`:`slm${i}`);
+  if(gen==='f') valF[i]=0; else valM[i]=0;
+  el.value=0;
+  actualizarDisplaySlider(i);
+
+  // Solo registrar si superó el umbral
+  if(val < UMBRAL) return;
+
+  const srv = SERVICIOS[i];
+
+  // Si el servicio incluye Sorteo → abrir formulario
+  if(srv.includes('Sorteo')){
+    _modalGen = gen;
+    _modalIdx = i;
+    const genLabel = gen==='f'?'Mujer':'Hombre';
+    document.getElementById('modal-titulo').textContent = `Sorteo · ${srv} · ${genLabel}`;
+    // Limpiar campos
+    ['ms-nombre','ms-apellido','ms-rut','ms-cel','ms-email'].forEach(id=>{
+      document.getElementById(id).value='';
+    });
+    document.getElementById('modal-sorteo').classList.add('vis');
+    document.getElementById('ms-nombre').focus();
+    return;
+  }
+
+  // Servicio sin sorteo → registrar directo
+  const genero = gen==='f'?'Mujer':'Hombre';
+  enviarPost({ action:'submitCombo', fecha:fechaActual, genero, servicio:srv, cantidad:1 });
+  mostrarToast(`+1 ${genero} · ${srv}`);
+}
+
+function cancelarModal(){
+  document.getElementById('modal-sorteo').classList.remove('vis');
+  _modalGen = null; _modalIdx = null;
+}
+
+function enviarModal(){
+  const nombre  = document.getElementById('ms-nombre').value.trim();
+  const apellido= document.getElementById('ms-apellido').value.trim();
+  const rut     = document.getElementById('ms-rut').value.trim();
+  const cel     = document.getElementById('ms-cel').value.trim();
+  const correo  = document.getElementById('ms-email').value.trim();
+
+  if(!nombre || !apellido || !rut || !cel || !correo){
+    mostrarToast('Completa todos los campos', true);
+    return;
+  }
+
+  const genero = _modalGen==='f'?'Mujer':'Hombre';
+  const srv    = SERVICIOS[_modalIdx];
+
+  enviarPost({
+    action:'submitCombo',
+    fecha:fechaActual,
+    genero, servicio:srv, cantidad:1,
+    nombre, apellido, rut, celular:cel, correo
+  });
+
+  mostrarToast(`+1 ${genero} · ${srv}`);
+  document.getElementById('modal-sorteo').classList.remove('vis');
+  _modalGen = null; _modalIdx = null;
+}
+
+function actualizarDisplaySlider(i){
+  // Mostrar flecha cuando supera umbral, vacío cuando en reposo
+  const labelF = valF[i] >= UMBRAL ? '✓' : valF[i] > 0 ? '→' : '';
+  const labelM = valM[i] >= UMBRAL ? '✓' : valM[i] > 0 ? '→' : '';
+  document.getElementById(`vf${i}`).textContent = labelF;
+  document.getElementById(`vm${i}`).textContent = labelM;
+  // color track — porcentaje directo sobre MAX=100
+  const sf=document.getElementById(`slf${i}`);
+  const sm=document.getElementById(`slm${i}`);
+  sf.style.setProperty('--pct', valF[i]+'%');
+  sm.style.setProperty('--pct', valM[i]+'%');
+}
+
+function actualizarTotales(){
+  const tf=valF.reduce((a,b)=>a+b,0);
+  const tm=valM.reduce((a,b)=>a+b,0);
+  document.getElementById('tot-f').textContent=tf;
+  document.getElementById('tot-m').textContent=tm;
+  document.getElementById('tot-t').textContent=tf+tm;
+}
+
+/* ─── RESUMEN ────────────────────────────────────────── */
+function renderResumen(){
+  const body=document.getElementById('resumen-body');
+  // Combinar sliders actuales + acumulado del día
+  const datos = SERVICIOS.map((srv,i)=>({
+    srv,
+    f: acumF[srv]||0,
+    m: acumM[srv]||0
+  }));
+  const maxVal = Math.max(...datos.map(d=>Math.max(d.f,d.m)),1);
+  const hayDatos = datos.some(d=>d.f>0||d.m>0);
+  if(!hayDatos){
+    body.innerHTML='<p style="color:var(--dim);font-size:.85rem;text-align:center;padding:8px 0">Sin datos aún</p>';
+    return;
+  }
+  body.innerHTML = datos.map(d=>{
+    if(d.f===0&&d.m===0) return '';
+    const pctF=Math.round(d.f/maxVal*100);
+    const pctM=Math.round(d.m/maxVal*100);
+    return `<div class="res-fila">
+      <span class="res-srv">${d.srv}</span>
+      <div class="res-tracks">
+        <div class="res-track"><div class="res-fill f" style="width:${pctF}%"></div></div>
+        <div class="res-track"><div class="res-fill m" style="width:${pctM}%"></div></div>
+      </div>
+      <div class="res-tots">
+        <span class="rf">${d.f}</span>
+        <span class="rm">${d.m}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── ÍCONOS TOTALES ─────────────────────────────────── */
+const SVG_BICI  = `<svg class="icono-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="13" cy="44" r="11" stroke="#4CAF50" stroke-width="4"/>
+  <circle cx="51" cy="44" r="11" stroke="#4CAF50" stroke-width="4"/>
+  <line x1="13" y1="44" x2="28" y2="20" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+  <line x1="28" y1="20" x2="51" y2="44" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+  <line x1="28" y1="20" x2="32" y2="44" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+  <line x1="24" y1="20" x2="36" y2="20" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+  <line x1="44" y1="14" x2="54" y2="14" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+  <line x1="49" y1="14" x2="49" y2="20" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+</svg>`;
+const SVG_PATIN = `<svg class="icono-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="18" y="8" width="22" height="26" rx="6" stroke="#FF9800" stroke-width="4"/>
+  <rect x="10" y="34" width="44" height="12" rx="4" stroke="#FF9800" stroke-width="4"/>
+  <circle cx="20" cy="54" r="6" stroke="#FF9800" stroke-width="4"/>
+  <circle cx="36" cy="54" r="6" stroke="#FF9800" stroke-width="4"/>
+  <circle cx="52" cy="54" r="6" stroke="#FF9800" stroke-width="4"/>
+</svg>`;
+
+const SVG_DADO  = `<svg class="icono-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" width="48" height="48" rx="10" stroke="#9C27B0" stroke-width="4"/>
+  <circle cx="21" cy="21" r="4.5" fill="#9C27B0"/>
+  <circle cx="43" cy="21" r="4.5" fill="#9C27B0"/>
+  <circle cx="21" cy="43" r="4.5" fill="#9C27B0"/>
+  <circle cx="43" cy="43" r="4.5" fill="#9C27B0"/>
+  <circle cx="32" cy="32" r="4.5" fill="#9C27B0"/>
+</svg>`;
+
+function renderIconos(){
+  const grid = document.getElementById('iconos-grid');
+  if(!grid) return;
+
+  // Bicis: "Mec. Bicis" + "Sorteo + M. Bicis"
+  const bicisF = (acumF["Mec. Bicis"]||0) + (acumF["Sorteo + M. Bicis"]||0);
+  const bicisM = (acumM["Mec. Bicis"]||0) + (acumM["Sorteo + M. Bicis"]||0);
+  // Patines: "Mec. Patines" + "Sorteo + M. Patines"
+  const patinesF = (acumF["Mec. Patines"]||0) + (acumF["Sorteo + M. Patines"]||0);
+  const patinesM = (acumM["Mec. Patines"]||0) + (acumM["Sorteo + M. Patines"]||0);
+  // Sorteo: "Sorteo" + "Sorteo + M. Bicis" + "Sorteo + M. Patines"
+  const sorteoF = (acumF["Sorteo"]||0) + (acumF["Sorteo + M. Bicis"]||0) + (acumF["Sorteo + M. Patines"]||0);
+  const sorteoM = (acumM["Sorteo"]||0) + (acumM["Sorteo + M. Bicis"]||0) + (acumM["Sorteo + M. Patines"]||0);
+
+  const items = [
+    { svg: SVG_BICI,   label:"Mec. Bicis",   cls:"bici",  f:bicisF,   m:bicisM   },
+    { svg: SVG_PATIN,  label:"Mec. Patines",  cls:"patin", f:patinesF, m:patinesM },
+    { svg: SVG_DADO,   label:"Sorteo",        cls:"dado",  f:sorteoF,  m:sorteoM  }
+  ];
+
+  grid.innerHTML = items.map(it=>{
+    const tot = it.f + it.m;
+    return `<div class="icono-card">
+      ${it.svg}
+      <div class="icono-total ${it.cls}">${tot}</div>
+      <div class="icono-label">${it.label}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── CARGAR DATOS DESDE PLANILLA ───────────────────── */
+async function cargarDatos(){
+  try{
+    const r=await fetch(`${ENDPOINT}?action=getData&fecha=${fechaActual}&t=${Date.now()}`);
+    const j=await r.json();
+    if(!j||j.error) return;
+
+    // Resetear acumulados
+    SERVICIOS.forEach(s=>{ acumF[s]=0; acumM[s]=0; });
+
+    // Poblar desde la planilla
+    if(j.registros){
+      j.registros.forEach(reg=>{
+        if(!acumF[reg.servicio]) acumF[reg.servicio]=0;
+        if(!acumM[reg.servicio]) acumM[reg.servicio]=0;
+        if(reg.genero==='Mujer')  acumF[reg.servicio]+=Number(reg.cantidad);
+        if(reg.genero==='Hombre') acumM[reg.servicio]+=Number(reg.cantidad);
+      });
+    }
+
+    renderResumen();
+    renderIconos();
+
+    // Gráficas encuesta
+    renderGraficas(j.encuestaP1||[], j.encuestaP2||[], j.encuestaP3||[]);
+
+    // Actualizar fechas si hay nuevas
+    if(j.fechas){
+      let fechas=j.fechas;
+      const hoy=domingoKey(new Date());
+      if(!fechas.includes(hoy)) fechas.unshift(hoy);
+      fechas.sort((a,b)=>b.localeCompare(a));
+      todasFechas=fechas;
+      pintarFechas(fechas);
+    }
+  }catch(e){ /* silencioso */ }
+}
+
+/* ─── POST ───────────────────────────────────────────── */
+async function enviarPost(payload){
+  try{
+    await fetch(ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    // Recargar para actualizar resumen
+    setTimeout(cargarDatos, 800);
+  }catch(e){
+    mostrarToast('Error al guardar',true);
+  }
+}
+
+/* ─── ENCUESTA ───────────────────────────────────────── */
+// Estado chips: p1 = múltiple, p2/p3 = único
+const encSel = { p1:null, p2:null, p3:null };
+
+function toggleChip(btn, grupo){
+  const val = btn.dataset.val;
+  const idx = encSel[grupo].indexOf(val);
+  if(idx>=0){
+    encSel[grupo].splice(idx,1);
+    btn.classList.remove('sel');
+  } else {
+    encSel[grupo].push(val);
+    btn.classList.add('sel');
+  }
+}
+
+function toggleChipExclusivo(btn, grupo){
+  // "En nada" deselecciona todo lo demás
+  const container = document.getElementById('chips-'+grupo);
+  container.querySelectorAll('.enc-chip').forEach(c=>{
+    c.classList.remove('sel');
+  });
+  encSel[grupo] = [];
+  const val = btn.dataset.val;
+  btn.classList.add('sel');
+  encSel[grupo].push(val);
+}
+
+function toggleChipUnico(btn, grupo){
+  const container = document.getElementById('chips-'+grupo);
+  container.querySelectorAll('.enc-chip').forEach(c=>c.classList.remove('sel'));
+  btn.classList.add('sel');
+  encSel[grupo] = btn.dataset.val;
+}
+
+async function enviarEncuesta(){
+  if(!encSel.p1){ mostrarToast('Responde la pregunta 1',true); return; }
+  if(!encSel.p2){ mostrarToast('Responde la pregunta 2',true); return; }
+  if(!encSel.p3){ mostrarToast('Responde la pregunta 3',true); return; }
+  const comentario = document.getElementById('enc-comentario').value.trim();
+  try{
+    await fetch(ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        action:'submitEncuesta',
+        fecha:fechaActual,
+        p1: encSel.p1,
+        p2: encSel.p2,
+        p3: encSel.p3,
+        comentario
+      })
+    });
+    // Limpiar
+    ['p1','p2','p3'].forEach(g=>{
+      const container=document.getElementById('chips-'+g);
+      if(container) container.querySelectorAll('.enc-chip').forEach(c=>c.classList.remove('sel'));
+    });
+    encSel.p1=null; encSel.p2=null; encSel.p3=null;
+    document.getElementById('enc-comentario').value='';
+    mostrarToast('¡Gracias por responder!');
+    cargarDatos();
+  }catch(e){ mostrarToast('No se pudo registrar',true); }
+}
+
+/* ─── GRÁFICAS ───────────────────────────────────────── */
+const PALETA=[
+  '#1a5fa8','#c0392b','#1b7a4a','#e0a020','#8e44ad',
+  '#16a085','#d35400','#2c3e50','#27ae60','#e74c3c'
+];
+
+const CATS_P1=[
+  'Accesibilidad, cercanía y/o ubicación',
+  'Ambiente, espacios y amplitud',
+  'Apoya el deporte',
+  'Atención y servicio',
+  'Familiar',
+  'Limpieza',
+  'Seguridad',
+  'Mejores precios',
+  'Variedad de locales',
+  'En nada'
+];
+const CATS_P2=['Actividad física','Comunidad','Familia','Recreación'];
+const CATS_P3=['Solo en CicloRecreoVía','En CicloRecreoVía y en otros'];
+
+function contarCats(respArr, cats){
+  const c={};
+  cats.forEach(cat=>c[cat]=0);
+  respArr.forEach(r=>{
+    const partes=(r||'').split('|').map(s=>s.trim());
+    partes.forEach(p=>{ if(c.hasOwnProperty(p)) c[p]++; });
+  });
+  return cats.map((cat,i)=>({n:cat,v:c[cat],col:PALETA[i%PALETA.length]})).filter(g=>g.v>0);
+}
+
+let chart1=null,chart2=null,chart3=null;
+function dibujarDonut(canvasId,sinId,leyId,grupos,ref,setter){
+  const c=document.getElementById(canvasId);
+  const s=document.getElementById(sinId);
+  const l=document.getElementById(leyId);
+  if(ref) ref.destroy();
+  const tot=grupos.reduce((a,g)=>a+g.v,0);
+  if(!tot){ s.classList.add('vis'); c.style.visibility='hidden'; l.innerHTML=''; setter(null); return; }
+  s.classList.remove('vis'); c.style.visibility='visible';
+  const ch=new Chart(c,{
+    type:'doughnut',
+    data:{ labels:grupos.map(g=>g.n), datasets:[{
+      data:grupos.map(g=>g.v),
+      backgroundColor:grupos.map(g=>g.col),
+      borderColor:'#fff', borderWidth:3, borderRadius:4, hoverOffset:5
+    }]},
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'60%',
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label:(ctx)=>` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/tot*100)}%)` } }
+      }
+    }
+  });
+  setter(ch);
+  l.innerHTML=grupos.map(g=>{
+    const pct=Math.round(g.v/tot*100);
+    return `<li class="ley-item"><span class="ley-dot" style="background:${g.col}"></span><span class="ley-label">${g.n}</span><span class="ley-val">${g.v} (${pct}%)</span></li>`;
+  }).join('');
+}
+
+function renderGraficas(p1arr,p2arr,p3arr){
+  dibujarDonut('chart-1','sin-1','ley-1',contarCats(p1arr,CATS_P1),chart1,c=>chart1=c);
+  dibujarDonut('chart-2','sin-2','ley-2',contarCats(p2arr,CATS_P2),chart2,c=>chart2=c);
+  dibujarDonut('chart-3','sin-3','ley-3',contarCats(p3arr,CATS_P3),chart3,c=>chart3=c);
+}
+
+/* ─── TOGGLE SECCIONES ───────────────────────────────── */
+const estadosSec = { enc:false, graf:false };
+function toggleSeccion(sec){
+  estadosSec[sec]=!estadosSec[sec];
+  const el=document.getElementById('sec-'+sec);
+  const btn=document.getElementById('btn-toggle-'+sec);
+  const label=sec==='enc'?'Encuesta':'Gráficas';
+  el.style.display=estadosSec[sec]?'block':'none';
+  btn.textContent=(estadosSec[sec]?'▲ Ocultar ':'▼ Mostrar ')+label;
+}
+
+/* ─── TOAST ─────────────────────────────────────────── */
+let toastT;
+function mostrarToast(msg,err=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className=err?'err show':'show';
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>{t.className=err?'err':'';},2800);
+}
+
+/* ─── INIT ───────────────────────────────────────────── */
+buildSliders();
+renderIconos();  // mostrar íconos con 0 desde el inicio
+cargarFechas().then(()=>cargarDatos());
+setInterval(cargarDatos, REFRESH_MS);
+</script>
+</body>
+</html>
